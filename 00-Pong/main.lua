@@ -2,9 +2,6 @@
     GD50 2018
     Pong Remake
 
-    pong-0
-    "The Day-0 Update"
-
     -- Main Program --
 
     Author: Colton Ogden
@@ -37,6 +34,12 @@ function love.load()
     -- use nearest-neighbor filtering on upscaling and downscaling to prevent blurring of text and graphics; try removing this function to see the difference:
     love.graphics.setDefaultFilter('nearest', 'nearest')
     
+    -- more retro looking front object we can use for any text
+    smallFont = love.graphics.newFont('font.ttf', 8)
+    
+    -- set LOVE2D's active font to the smallFont object
+    love.graphics.setFont(smallFont)
+    
     -- initialize our virtual resolution, which will be rendered within our actual window no matter it's dimensions; replaces our love.window.setMode call from the last example
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
@@ -63,9 +66,13 @@ function love.draw()
     -- begin rendering at virtual resolution
     push:apply('start')
     
+    -- clear the screen with a specific color; in this case, a color similar to some versions of the original Pong game
+    --love.graphics.clear(40, 45, 52, 255)
+    
     -- condensed onto one line from last example
     -- note we are now using virtual width and height now for text placement
-    love.graphics.printf(
+    
+    --[[love.graphics.printf(
         'Hello Pong!',          -- text to render
         0,                      -- starting X (0 since we're going to center it based on width)
         VIRTUAL_HEIGHT / 2 - 6,  -- starting Y (halfway down the screen)
@@ -73,4 +80,25 @@ function love.draw()
         'center')               -- alignment mode, can be 'center', 'left', or 'right'
         -- end rendering at virtual resolution
         push:apply('end')
+    ]]--
+    
+    -- draw welcome text toward the top of the screen
+    love.graphics.printf('Hello Pong!', 0, 20, VIRTUAL_WIDTH, 'center')
+    
+    --
+    -- paddles are simply rectangles we draw on the screen at certain points, as is the ball
+    --
+    
+    -- render first paddle (left side)
+    love.graphics.rectangle('fill', 10, 30, 5, 20)
+    
+    -- render second rectangle(right side)
+    love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 50, 5, 20)
+    
+    -- render ball (center)
+    love.graphics.rectangle('fill', VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
+    
+    -- end rendering at virtual resolution
+    push:apply('end')
 end
+
