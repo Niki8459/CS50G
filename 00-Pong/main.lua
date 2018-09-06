@@ -47,11 +47,17 @@ function love.load()
     -- use nearest-neighbor filtering on upscaling and downscaling to prevent blurring of text and graphics; try removing this function to see the difference:
     love.graphics.setDefaultFilter('nearest', 'nearest')
     
+    -- set the title of our application window
+    love.window.setTitle('Pong')
+    
     -- "seed" the RNG so that calls to random are always random; use the current time, since that will vary on startup every time
     math.randomseed(os.time())
     
     -- more retro looking front object we can use for any text
     smallFont = love.graphics.newFont('font.ttf', 8)
+    
+    -- larger font for drawing the score on the screen
+    scoreFont = love.graphics.newFont('font.ttf', 32)
     
     -- set LOVE2D's active font to the smallFont object
     love.graphics.setFont(smallFont)
@@ -62,6 +68,10 @@ function love.load()
         resizable = false,
         vsync = true
     })
+    
+    -- initialize score variables, used for rendering on the screen and keeping track of the winner
+    player1Score = 0
+    player2Score = 0
     
     -- initialize our player paddles; make them global so that they can be detected by other functions and modules
     player1 = Paddle(10, 30, 5, 20)
@@ -135,31 +145,21 @@ function love.draw()
     push:apply('start')
     
     -- clear the screen with a specific color; in this case, a color similar to some versions of the original Pong game
-    --love.graphics.clear(40, 45, 52, 255)
-    
-    -- condensed onto one line from last example
-    -- note we are now using virtual width and height now for text placement
-    
-    --[[love.graphics.printf(
-        'Hello Pong!',          -- text to render
-        0,                      -- starting X (0 since we're going to center it based on width)
-        VIRTUAL_HEIGHT / 2 - 6,  -- starting Y (halfway down the screen)
-        VIRTUAL_WIDTH,           -- number of pixels to center within (the entire screen here)
-        'center')               -- alignment mode, can be 'center', 'left', or 'right'
-        -- end rendering at virtual resolution
-        push:apply('end')
-    ]]--
-    
-    -- draw welcome text toward the top of the screen
-    love.graphics.setFont(smallFont)
-    --love.graphics.printf('Hello Pong!', 0, 20, VIRTUAL_WIDTH, 'center')
+    love.graphics.clear(0.16, 0.18, 0.2, 1)
     
     -- draw different things based on the state of the game
+    love.graphics.setFont(smallFont)
+    
     if gameState == 'start' then
         love.graphics.printf('Hello Start State!', 0, 20, VIRTUAL_WIDTH, 'center')
     else
         love.graphics.printf('Hello Play State!', 0, 20, VIRTUAL_WIDTH, 'center')
-    end    
+    end
+    
+    -- draw score on the left and right center of the screen; need to switch font to draw before actually printing
+    love.graphics.setFont(scoreFont)
+    love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
+    love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
     
     -- render paddles, now using their class's render method
     player1:render()
@@ -168,7 +168,20 @@ function love.draw()
     -- render ball using its class's render method
     ball:render()
     
+    -- new function just to demonstrate how to see FPS in LOVE2D
+    displayFPS()
+    
     -- end rendering at virtual resolution
     push:apply('end')
 end
+
+--[[
+    Renders the current FPS
+]]
+function displayFPS()
+    -- simple FPS display across all states
+    love.graphics.setFont(smallFont)
+    love.graphics.setColor(0, 255, 0, 255)
+    love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
+end    
 
