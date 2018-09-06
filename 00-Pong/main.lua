@@ -56,6 +56,8 @@ function love.load()
     -- more retro looking front object we can use for any text
     smallFont = love.graphics.newFont('font.ttf', 8)
     
+    largeFont = love.graphics.newFont('font.ttf', 16)
+    
     -- larger font for drawing the score on the screen
     scoreFont = love.graphics.newFont('font.ttf', 32)
     
@@ -90,7 +92,7 @@ end
 --[[
     Runs every frame, with "dt" passed in, our delta in seconds since the last frame, which LOVE2D supplies us
 ]]
-  function love.update(dt)
+function love.update(dt)
     if gameState == 'serve' then
         -- before switching to play, initialize ball;s velocity based on player who last scored
         ball.dy = math.random(-50,50)
@@ -134,22 +136,35 @@ end
         if ball.y >= VIRTUAL_HEIGHT -4 then
             ball.y = VIRTUAL_HEIGHT -4
             ball.dy = -ball.dy
+        end 
+    
+        -- if we reach the left or right edge of the screen, go back to start and update the score
+        if ball.x < 0 then
+            servingPlayer = 1
+            player2Score = player2Score + 1
+        
+            -- if we've reached a score of 10, the game is over; set the state to done so we can show the victory message
+            if player2Score == 10 then
+                winningPlayer = 2
+                gameState = 'done'
+            else    
+                gameState = 'serve'    
+                ball:reset()
+            end    
         end
-    end    
     
-    -- if we reach the left or right edge of the screen, go back to start and update the score
-    if ball.x < 0 then
-        servingPlayer = 1
-        player2Score = player2Score + 1
-        ball:reset()
-        gameState = 'serve'
-    end
-    
-    if ball.x > VIRTUAL_WIDTH then
-        servingPlayer = 2
-        player1Score = player1Score + 1
-        ball:reset()
-        gameState = 'serve'
+        if ball.x > VIRTUAL_WIDTH then
+            servingPlayer = 2
+            player1Score = player1Score + 1
+            
+            if player1Score == 10 then
+                winningPlayer = 1
+                gameState = 'done'
+            else
+                gameState = 'serve'
+                ball:reset()
+            end
+        end    
     end    
     
     -- player 1 movement
@@ -194,6 +209,22 @@ end
             gameState = 'serve'
         elseif gameState == 'serve' then
             gameState = 'play'
+        elseif gameState == 'done' then
+            -- game is simply in a restart phase here, but will set the serving player to the opponent of whomever won for fairness!
+            gameState = 'serve'
+            
+            ball:reset()
+            
+            -- reset scores to 0
+            player1Score = 0
+            player2Score = 0
+            
+            -- decide serving player as the opposite of who won
+            if winningPlayer == 1 then
+                servingPlayer = 2
+            else
+                servingPlayer = 1
+            end    
         end    
     end
 end    
@@ -223,6 +254,12 @@ function love.draw()
         love.graphics.printf('Press Enter to serve!', 0, 20, VIRTUAL_WIDTH, 'center')
     elseif gameState == 'play' then
         -- no UI messages to display in play
+    elseif gameState == 'done' then
+        -- UI messages
+        love.graphics.setFont(largeFont)
+        love.graphics.printf('Player ' .. tostring(winningPlayer) .. ' wins!', 0, 10, VIRTUAL_WIDTH, 'center')
+        love.graphics.setFont(smallFont)
+        love.graphics.printf('Press Enter to restart!', 0, 30, VIRTUAL_WIDTH, 'center')
     end    
     
     -- render paddles, now using their class's render method
