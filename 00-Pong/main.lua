@@ -75,7 +75,7 @@ function love.load()
     -- initialize our virtual resolution, which will be rendered within our actual window no matter it's dimensions; replaces our love.window.setMode call from the last example
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
-        resizable = false,
+        resizable = true,
         vsync = true
     })
     
@@ -95,6 +95,13 @@ function love.load()
     
     -- game state variable used to transition between different parts of the game; used for beginning, menus, main game, high score list, etc.; we will use this to determine behavior during render and update
     gameState = 'start'
+end
+
+--[[
+    Called by LOVE2D whenever we resize the screen; here, we just want to pass in the width and height to push so our virtual resolution can be resized as needed
+]]
+function love.resize(w, h)
+    push:resize(w, h)
 end
 
 --[[
