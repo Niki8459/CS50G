@@ -202,6 +202,7 @@ function love.update(dt)
     end
     
     -- player 2 movement
+    --[[
     if love.keyboard.isDown('up') then
         player2.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown('down') then
@@ -209,6 +210,17 @@ function love.update(dt)
     else
         player2.dy = 0
     end
+    ]]--
+    
+    -- AI controlled player2
+    if ball.y + 4 > player2.y + player2.height + math.random(0,8) then
+        player2.dy = PADDLE_SPEED * math.random(5,10) / 10
+    elseif ball.y < player2.y - math.random(0,8) then
+        player2.dy = -PADDLE_SPEED * math.random(5,10) / 10
+    else
+        player2.dy = 0
+    end    
+    
     
     -- update our ball based on its DX and DY only if we're in play state
     -- scale the velocity by dt so movement is framerate-independent
