@@ -17,6 +17,9 @@ Class = require 'class'
 -- our Bird class
 require 'Bird'
 
+-- our pipe class
+require 'Pipe'
+
 -- physical screen dimensions
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -42,6 +45,12 @@ local BACKGROUND_LOOPING_POINT = 413
 
 -- our bird sprite
 local bird = Bird()
+
+-- our table of spawning Pipes
+local pipes = {}
+
+-- our timer for spawning pipes
+local spawnTimer = 0
 
 function love.load()
     -- initialize our nearest-neighbor filter for preventing bloored images
@@ -92,7 +101,27 @@ function love.update(dt)
     -- scroll ground by preset speed * dt, looping back to 0 after the screen width passes
     groundScroll = (groundScroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH
     
+    spawnTimer = spawnTimer + dt
+    
+    -- spawn a new Pipe if the times is past 3 seconds
+    if spawnTimer > 3 then
+        table.insert(pipes, Pipe())
+        print('Added new pipe!')
+        spawnTimer = 0
+    end    
+    
+    -- update the bird for input and gravity
     bird:update(dt)
+    
+    -- for every pipe in the scene
+    for k, pipe in pairs(pipes) do
+        pipe:update(dt)
+        
+        -- if pipe is no longer visible past left edge, remove it from scene
+        if pipe.x < -pipe.width then
+            table.remove(pipes, k) 
+        end    
+    end    
     
     -- reset input table
     love.keyboard.keysPressed = {}
@@ -105,6 +134,11 @@ function love.draw()
     
     -- draw the background at the negative looping point
     love.graphics.draw(background, -backgroundScroll, 0)
+    
+    -- render all the pipes in our scene
+    for k, pipe in pairs(pipes) do
+        pipe:render() 
+    end    
     
     -- draw the ground on top of the background, toward the bottom of the screen, at its negative looping point
     love.graphics.draw(ground, -groundScroll, VIRTUAL_HEIGHT - 16)

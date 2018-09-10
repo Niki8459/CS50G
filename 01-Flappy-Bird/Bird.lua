@@ -1,6 +1,6 @@
 Bird = Class{}
 
-local GRAVITY = 10
+local GRAVITY = 12
 
 function Bird:init()
     -- load bird image from disk and assign its width and height
@@ -22,7 +22,7 @@ function Bird:update(dt)
     
     -- add a sudden burst of negative gravity if we hit space
     if love.keyboard.wasPressed('space') then
-        self.dy = -3
+        self.dy = -4
     end    
     
     -- apply current velocity to Y position
