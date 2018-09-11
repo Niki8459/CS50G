@@ -16,8 +16,10 @@
 ]]
 
 -- virtual resolution handling library
+-- https://github.com/Ulydev/push
 push = require 'push'
 
+-- https://github.com/vrld/hump/blob/master/class.lua
 -- classic OOP class library
 Class = require 'class'
 
@@ -71,6 +73,9 @@ function love.load()
     -- initialize our nearest-neighbor filter for preventing bloored images
     love.graphics.setDefaultFilter('nearest', 'nearest')
     
+    -- seed the RNG
+    math.randomseed(os.time())
+    
     -- app window title
     love.window.setTitle('Happy Bird')
     
@@ -80,6 +85,21 @@ function love.load()
     flappyFont = love.graphics.newFont('flappy.ttf', 28)
     hugeFont = love.graphics.newFont('flappy.ttf', 56)
     love.graphics.setFont(flappyFont)
+    
+    -- initialize our table of sounds
+    sounds = {
+        ['jump'] = love.audio.newSource('jump.wav', 'static'),
+        ['explosion'] = love.audio.newSource('explosion.wav', 'static'),
+        ['hurt'] = love.audio.newSource('hurt.wav', 'static'),
+        ['score'] = love.audio.newSource('score.wav', 'static'),
+        
+        -- https://freesound.org/people/xsgianni/sounds/388079/
+        ['music'] = love.audio.newSource('marios_way.mp3', 'static')
+    }
+    
+    -- kick off music
+    sounds['music']:setLooping(true)
+    sounds['music']:play()
     
     -- initialize our virtual resolution
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
