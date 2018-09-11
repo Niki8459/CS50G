@@ -33,7 +33,9 @@ require 'PipePair'
 -- all code related to game state and state machines
 require 'StateMachine'
 require 'states/BaseState'
+require 'states/CountdownState'
 require 'states/PlayState'
+require 'states/ScoreState'
 require 'states/TitleScreenState'
 
 -- physical screen dimensions
@@ -70,7 +72,7 @@ function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     
     -- app window title
-    love.window.setTitle('Fifty Bird')
+    love.window.setTitle('Happy Bird')
     
     -- initialize our nice-looking retro text fonts
     smallFont = love.graphics.newFont('font.ttf', 8)
@@ -89,7 +91,9 @@ function love.load()
     -- initialize state machine with all state-returning functions
     gStateMachine = StateMachine {
         ['title'] = function() return TitleScreenState() end,
+        ['countdown'] = function() return CountdownState() end,
         ['play'] = function() return PlayState() end,
+        ['score'] = function() return ScoreState() end
     }
     gStateMachine:change('title')
     

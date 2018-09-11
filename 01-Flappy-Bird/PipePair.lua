@@ -9,7 +9,7 @@
 PipePair = Class{}
 
 -- size of the gap between pipes
-local GAP_HEIGHT = math.random(80,110)
+local GAP_HEIGHT = math.random(70,100)
 
 function PipePair:init(y)
     -- initialize pipes past the end of the screen
