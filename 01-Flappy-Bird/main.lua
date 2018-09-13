@@ -135,29 +135,39 @@ function love.keypressed(key)
 end    
 
 --[[
-    New function used to check our global input table for keys we activated 
-    during this frame, looked up by their string value
+    LOVE2D callback fired each time a mouse button is pressed
+    It gives us the X and Y of the mouse, as well as the button is question
 ]]
+function love.mousepressed(x, y, button)
+    love.mouse.buttonsPressed[button] = true
+end    
+
 function love.keyboard.wasPressed(key)
-    if love.keyboard.keysPressed[key] then
-        return true
-    else
-        return false
-    end    
+    return love.keyboard.keysPressed[key]
+end
+
+--[[
+    Equivalent to our keyboard function from before, but for the mouse buttons
+]]
+function love.mouse.wasPressed(button)
+    return love.mouse.buttonsPressed[button]
 end    
 
 function love.update(dt)
-    -- scroll background by preset speed * dt, looping back to 0 after the looping point
-    backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
+    if scrolling then
+        -- scroll background by preset speed * dt, looping back to 0 after the looping point
+        backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
     
-    -- scroll ground by preset speed * dt, looping back to 0 after the screen width passes
-    groundScroll = (groundScroll + GROUND_SCROLL_SPEED * dt) % GROUND_LOOPING_POINT
+        -- scroll ground by preset speed * dt, looping back to 0 after the screen width passes
+        groundScroll = (groundScroll + GROUND_SCROLL_SPEED * dt) % GROUND_LOOPING_POINT
+    end
     
     -- now, we just update the state machine, which defers to the right state
     gStateMachine:update(dt)
     
     -- reset input table
     love.keyboard.keysPressed = {}
+    love.mouse.buttonsPressed = {}
 end    
 
 function love.draw()
