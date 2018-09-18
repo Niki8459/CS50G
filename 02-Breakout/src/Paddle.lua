@@ -57,7 +57,7 @@ function Paddle:update(dt)
     -- go into the negatives; the movement calculation is simply our
     -- previously-defined paddle speed scaled by dt
     if self.dx < 0 then
-        self.dx = math.max(0, self.x + self.dx * dt)
+        self.x = math.max(0, self.x + self.dx * dt)
     -- similar to before, this time we use math.min to ensure we don't
     -- go any farther than the bottom of the screen minus the paddle's
     -- height (or else it will go partially below, since position is 
