@@ -43,7 +43,7 @@ function Ball:collides(target)
     
     -- then check to see if the bottom edge of either is higher that the top
     -- edge of the other
-    if self.y > target.x + target.height or target.y > self.y + self.height then
+    if self.y > target.y + target.height or target.y > self.y + self.height then
         return false
     end
     
