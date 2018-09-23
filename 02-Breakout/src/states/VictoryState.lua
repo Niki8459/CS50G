@@ -16,13 +16,14 @@ VictoryState = Class{__includes = BaseState}
 function VictoryState:enter(params)
     self.level = params.level
     self.score = params.score
+    self.highScores = params.highScores
     self.paddle = params.paddle
     self.health = params.health
     self.ball = params.ball
 end    
 
 function VictoryState:update(dt)
-    self.paddle.update(dt)
+    self.paddle:update(dt)
     
     -- have the ball track the player
     self.ball.x = self.paddle.x + (self.paddle.width / 2) - 4
@@ -35,7 +36,8 @@ function VictoryState:update(dt)
                 bricks = LevelMaker.createMap(self.level + 1),
                 paddle = self.paddle,
                 health = self.health,
-                score = self.score
+                score = self.score,
+                highScores = self.highScores
             })
     end    
 end    
