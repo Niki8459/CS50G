@@ -2,10 +2,11 @@
     GD50
     swap
 
-    Showcases simple swapping of tiles on a game board, no tweening.
+    Showcases simple swapping of tiles on a game board with tweening.
 ]]
 
 push = require 'push'
+Timer = require 'knife.timer'
 
 -- for GenerateQuads
 require 'Util'
@@ -66,7 +67,7 @@ function love.keypressed(key)
         end
     elseif key == 'left' then
         if x > 1 then
-            selectedTile = board[y][x-1]
+            selectedTile = board[y][x - 1]
         end
     elseif key == 'right' then
         if x < 8 then
@@ -94,10 +95,14 @@ function love.keypressed(key)
             board[tile1.gridY][tile1.gridX] = tile2
             board[tile2.gridY][tile2.gridX] = tempTile
             
-            -- swap coordinates and tile grid positions
-            tile2.x, tile2.y = tile1.x, tile1.y
+            -- tween x and y coordinates instead of instantly setting them
+            Timer.tween(0.5, {
+                    [tile2] = {x = tile1.x, y = tile1.y},
+                    [tile1] = {x = tempX, y = tempY}
+                })
+            
+            -- instantly set grid variables
             tile2.gridX, tile2.gridY = tile1.gridX, tile1.gridY
-            tile1.x, tile1.y = tempX, tempY
             tile1.gridX, tile1.gridY = tempgridX, tempgridY
             
             -- unhighlighting
