@@ -23,6 +23,8 @@ TILE_SIZE = 16
 CHARACTER_WIDTH = 16
 CHARACTER_HEIGHT = 20
 
+CHARACTER_MOVE_SPEED = 40
+
 -- camera scroll speed
 CAMERA_SCROLL_SPEED = 40
 
@@ -91,9 +93,9 @@ end
 function love.update(dt)
     -- update camera scroll based on user input
     if love.keyboard.isDown('left') then
-        cameraScroll = cameraScroll - CAMERA_SCROLL_SPEED * dt
+        characterX = characterX - CHARACTER_MOVE_SPEED * dt
     elseif love.keyboard.isDown('right') then
-        cameraScroll = cameraScroll + CAMERA_SCROLL_SPEED * dt
+        characterX = characterX + CHARACTER_MOVE_SPEED * dt
     end    
 end    
 
@@ -114,6 +116,6 @@ function love.draw()
     end   
     
     -- draw character
-    love.graphics.draw(characterSheet, characterQuads[1], characterX, characterY)
+    love.graphics.draw(characterSheet, characterQuads[1], math.floor(characterX), math.floor(characterY))
     push:finish()
 end    
