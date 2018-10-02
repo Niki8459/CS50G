@@ -1,9 +1,12 @@
 --[[
     GD50
     Super Mario Bros. Remake
+
     -- Util Class --
+
     Author: Colton Ogden
     cogden@cs50.harvard.edu
+
     Helper functions for writing Match-3.
 ]]
 
