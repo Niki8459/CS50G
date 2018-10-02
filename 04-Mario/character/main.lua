@@ -26,6 +26,9 @@ CHARACTER_WIDTH = 16
 CHARACTER_HEIGHT = 20
 
 CHARACTER_MOVE_SPEED = 40
+JUMP_VELOCITY = -200
+
+GRAVITY = 7
 
 -- camera scroll speed
 CAMERA_SCROLL_SPEED = 40
@@ -56,12 +59,19 @@ function love.load()
         frames = {10, 11},
         interval = 0.2
     }
+    jumpAnimation = Animation {
+        frames = {3},
+        interval = 1
+    }
     
     currentAnimation = idleAnimation
     
     -- place character in middle of the screen, above the top ground tile
     characterX = VIRTUAL_WIDTH / 2 - (CHARACTER_WIDTH / 2)
     characterY = ((7 - 1) * TILE_SIZE) - CHARACTER_HEIGHT
+    
+    -- for jumping and applying gravity
+    characterDY = 0
     
     -- direction the character is facing
     direction = 'right'
@@ -105,20 +115,44 @@ function love.keypressed(key)
     if key == 'escape' then
         love.event.quit()
     end
+    
+    -- if we hit space and are on the ground
+    if key == 'space' and characterDY == 0 then
+        characterDY = JUMP_VELOCITY
+        currentAnimation = jumpAnimation
+    end    
 end
 
 function love.update(dt)
+    -- apply velocity to character Y
+    characterDY = characterDY + GRAVITY
+    characterY = characterY + characterDY * dt
+    
+    -- if we've gone below the map limit, set DY to 0
+    if characterY > ((7 - 1) * TILE_SIZE) - CHARACTER_HEIGHT then
+        characterY = ((7 - 1) * TILE_SIZE) - CHARACTER_HEIGHT
+        characterDY = 0
+    end     
+        
     -- update the animation so it scrolls through the right frames
     currentAnimation:update(dt)
     
     -- update camera scroll based on user input
     if love.keyboard.isDown('left') then
         characterX = characterX - CHARACTER_MOVE_SPEED * dt
-        currentAnimation = movingAnimation
+        
+        if characterDY == 0 then
+            currentAnimation = movingAnimation
+        end    
+
         direction = 'left'
     elseif love.keyboard.isDown('right') then
         characterX = characterX + CHARACTER_MOVE_SPEED * dt
-        currentAnimation = movingAnimation
+        
+        if characterDY == 0 then
+            currentAnimation = movingAnimation
+        end
+        
         direction = 'right'
     else
         currentAnimation = idleAnimation
