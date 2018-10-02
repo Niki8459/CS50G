@@ -97,6 +97,9 @@ function love.update(dt)
     elseif love.keyboard.isDown('right') then
         characterX = characterX + CHARACTER_MOVE_SPEED * dt
     end    
+    
+    -- set the camera's left edge to half the screen to the left of the player's center
+    cameraScroll = characterX - (VIRTUAL_WIDTH / 2) + (CHARACTER_WIDTH / 2)
 end    
 
 function love.draw()
