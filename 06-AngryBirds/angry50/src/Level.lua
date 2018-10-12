@@ -36,7 +36,7 @@ function Level:init()
             local velX, velY = playerFixture:getBody():getLinearVelocity()
             local sumVel = math.abs(velX) + math.abs(velY)
 
-            if sumVel > 20 then
+            if sumVel > 450 then
                 table.insert(self.destroyedBodies, obstacleFixture:getBody())
             end
         end
@@ -52,7 +52,7 @@ function Level:init()
             local velX, velY = obstacleFixture:getBody():getLinearVelocity()
             local sumVel = math.abs(velX) + math.abs(velY)
 
-            if sumVel > 20 then
+            if sumVel > 300 then
                 table.insert(self.destroyedBodies, alienFixture:getBody())
             end
         end
@@ -68,7 +68,7 @@ function Level:init()
             local velX, velY = playerFixture:getBody():getLinearVelocity()
             local sumVel = math.abs(velX) + math.abs(velY)
 
-            if sumVel > 20 then
+            if sumVel > 450 then
                 table.insert(self.destroyedBodies, alienFixture:getBody())
             end
         end
