@@ -86,6 +86,9 @@ function love.load()
     -- either going to be 1 or 2; whomever is scored on gets to serve the following turn
     servingPlayer = 1
     
+    -- singleplayer or multiplayer mode of game
+    gameMode = 'singlePlayer'
+    
     -- initialize our player paddles; make them global so that they can be detected by other functions and modules
     player1 = Paddle(10, 30, 5, 20)
     player2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
@@ -202,25 +205,25 @@ function love.update(dt)
     end
     
     -- player 2 movement
-    --[[
-    if love.keyboard.isDown('up') then
-        player2.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('down') then
-        player2.dy = PADDLE_SPEED
-    else
-        player2.dy = 0
-    end
-    ]]--
-    
-    -- AI controlled player2
-    if ball.y + 4 > player2.y + player2.height + math.random(0,8) then
-        player2.dy = PADDLE_SPEED * math.random(5,10) / 10
-    elseif ball.y < player2.y - math.random(0,8) then
-        player2.dy = -PADDLE_SPEED * math.random(5,10) / 10
-    else
-        player2.dy = 0
-    end    
-    
+    -- singlePlayer mode
+    if gameMode == 'singlePlayer' then
+        if love.keyboard.isDown('up') then
+            player2.dy = -PADDLE_SPEED
+        elseif love.keyboard.isDown('down') then
+            player2.dy = PADDLE_SPEED
+        else
+            player2.dy = 0
+        end    
+    -- multiPlayer mode    
+    elseif gameMode == 'multiPlayer' then
+        if ball.y + 4 > player2.y + player2.height + math.random(0,8) then
+            player2.dy = PADDLE_SPEED * math.random(5,10) / 10
+        elseif ball.y < player2.y - math.random(0,8) then
+            player2.dy = -PADDLE_SPEED * math.random(5,10) / 10
+        else
+            player2.dy = 0
+        end 
+    end        
     
     -- update our ball based on its DX and DY only if we're in play state
     -- scale the velocity by dt so movement is framerate-independent
