@@ -87,7 +87,7 @@ function love.load()
     servingPlayer = 1
     
     -- singleplayer or multiplayer mode of game
-    gameMode = 'singlePlayer'
+    gameMode = '1 Player'
     
     -- initialize our player paddles; make them global so that they can be detected by other functions and modules
     player1 = Paddle(10, 30, 5, 20)
@@ -206,7 +206,7 @@ function love.update(dt)
     
     -- player 2 movement
     -- singlePlayer mode
-    if gameMode == 'singlePlayer' then
+    if gameMode == '1 Player' then
         if love.keyboard.isDown('up') then
             player2.dy = -PADDLE_SPEED
         elseif love.keyboard.isDown('down') then
@@ -215,7 +215,7 @@ function love.update(dt)
             player2.dy = 0
         end    
     -- multiPlayer mode    
-    elseif gameMode == 'multiPlayer' then
+    elseif gameMode == '2 Players' and gameState == 'play' then
         if ball.y + 4 > player2.y + player2.height + math.random(0,8) then
             player2.dy = PADDLE_SPEED * math.random(5,10) / 10
         elseif ball.y < player2.y - math.random(0,8) then
@@ -265,6 +265,14 @@ function love.update(dt)
             else
                 servingPlayer = 1
             end    
+        end  
+    elseif key == 'tab' then
+        if gameState == 'start' then
+            if gameMode == '1 Player' then
+                gameMode = '2 Players'
+            elseif gameMode == '2 Players' then
+                gameMode = '1 Player'
+            end    
         end    
     end
 end    
@@ -287,7 +295,8 @@ function love.draw()
     if gameState == 'start' then
         love.graphics.setFont(smallFont)
         love.graphics.printf('Welcome to Pong!', 0, 10, VIRTUAL_WIDTH, 'center')
-        love.graphics.printf('Press Enter to begin!', 0, 20, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf(gameMode .. ' (Press TAB to change)', 0, 20, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf('Press Enter to begin!', 0, 30, VIRTUAL_WIDTH, 'center')
     elseif gameState == 'serve' then
         love.graphics.setFont(smallFont)
         love.graphics.printf('Player ' .. tostring(servingPlayer) .. "'s serve!", 0, 10, VIRTUAL_WIDTH, 'center')
