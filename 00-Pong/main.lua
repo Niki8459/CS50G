@@ -205,8 +205,8 @@ function love.update(dt)
     end
     
     -- player 2 movement
-    -- singlePlayer mode
-    if gameMode == '1 Player' then
+    -- multiPlayer mode
+    if gameMode == '2 Players' then
         if love.keyboard.isDown('up') then
             player2.dy = -PADDLE_SPEED
         elseif love.keyboard.isDown('down') then
@@ -214,8 +214,8 @@ function love.update(dt)
         else
             player2.dy = 0
         end    
-    -- multiPlayer mode    
-    elseif gameMode == '2 Players' and gameState == 'play' then
+    -- singlePlayer mode    
+    elseif gameMode == '1 Player' and gameState == 'play' then
         if ball.y + 4 > player2.y + player2.height + math.random(0,8) then
             player2.dy = PADDLE_SPEED * math.random(5,10) / 10
         elseif ball.y < player2.y - math.random(0,8) then
